@@ -65,7 +65,7 @@
 .game-turned-on{
     float:right;
 }
-#start-button-container{
+#start-button-container,#strict-button-container{
     position:absolute;
     z-index:7;
 }
@@ -73,6 +73,7 @@ button{
     background-color:green;
     border-radius:50%;
     position:relative;
+    margin-top:3px;
 }
 #on-off-section{
     position:absolute;
@@ -83,6 +84,15 @@ button{
     position:absolute;
     border: 1.5px solid darkgrey;
     z-index:6;
+}
+#strict-btn{
+    background-color:yellow;
+}
+#strict-indicator{
+    background-color: black;
+    border: 1.5px solid darkgrey;
+    border-radius: 50%;
+    position:absolute;
 }
 
 
@@ -133,10 +143,21 @@ button{
     button{
         width:25px;
         height:25px;
+        margin-left:3px;
     }
     #start-button-container{
-        top:60px;
-        left:130px;
+        top:10px;
+        left:60px;
+    }
+    #strict-button-container{
+        top: 60px;
+        left: 120px;
+    }
+    #strict-indicator{
+        height: 10px;
+        width: 10px;
+        left:30px;
+        top: 21px;
     }
     #on-slider-container{
         height:21px;
@@ -209,6 +230,19 @@ button{
         top:8px;
         left:30px;
     }
+    #strict-button-container{
+        top: 27px;
+        left: 60px;
+    }
+    #strict-indicator{
+        height: 8px;
+        width: 8px;
+        left:25px;
+        top: 21px;
+    }
+    #strict-btn{
+        float:left;
+    }
     #on-slider-container{
         height:12px;
         width:54px;
@@ -223,6 +257,6 @@ button{
         height: 35px;
         width: 35px;
         top:30px;
-        left:36.5px;
+        left:10px;
     }
 }
