@@ -94,6 +94,9 @@ function playGame(game){
                 }
                 player_turn(play_sequence,game);
             });
+            /*!!!!!!!Current issue here!!!!!!!!
+            This will run through ALL of the computer turns first, THEN all of the player turns.
+            */
         }
     }
 }
