@@ -1,0 +1,130 @@
+#play-area{
+    margin: 0 auto;
+    min-width: 300px;
+    min-height: 300px;
+    padding: 0px;
+}
+.mt-5{
+    margin-top:3rem !important;
+}
+#simon-machine{
+    border-radius:50%;
+    background-color: black;
+}
+#red{
+    background-color: red;
+    border-top-left-radius: 100%;
+}
+#green{
+    background-color: green;
+    border-top-right-radius:100%;
+}
+#yellow{
+    background-color: yellow;
+    border-bottom-right-radius: 100%;
+}
+#blue{
+    background-color: blue;
+    border-bottom-left-radius: 100%;
+}
+#buttons-container{
+    height: 70%;
+    border-radius:50%;
+    position: absolute;
+}
+#middle-circle-container{
+    position:absolute;
+}
+#middle-circle{
+    border-radius:50%;
+    margin:0 auto;
+    background-color:black;
+    position:absolute;
+    z-index:1;
+    position:relative !important;
+}
+.gameButton{
+    display: block;
+    position: absolute;
+}
+
+
+
+@media (min-width:550px){
+    #play-area{
+        width: 500px;
+        height: 500px;
+    }
+    #simon-machine{
+        height: 100%;
+        width: 500px;
+    }
+    .gameButton{
+        height: 220px;
+        width: 220px;
+    }
+    #middle-circle{
+        width:220px;
+        height:220px;
+    }
+    #red{
+        top:20px;
+        left:20px;
+    }
+    #blue{
+        top:260px;
+        left:20px;
+    }
+    #yellow{
+        top:260px;
+        left:260px;
+    }
+    #green{
+        top:20px;
+        left:260px;
+    }
+    #middle-circle-container{
+        top: 140px;
+        left: 140px;
+    }
+}
+@media (max-width: 549px){
+    #play-area{
+        width:300px;
+        height:300px;
+    }
+    #simon-machine{
+        height: 100%;
+        width:300px;
+    }
+    .gameButton{
+        height: 132px;
+        width:132px;
+    }
+    #middle-circle{
+        width:132px;
+        height:132px;
+    }
+    #red{
+        top:12px;
+        left: 12px;
+    }
+    #blue{
+        left:12px;
+        top:155px;
+
+    }
+    #yellow{
+        top:155px;
+        left:155px;
+
+    }
+    #green{
+        top:12px;
+        left:155px;
+    }
+    #middle-circle-container{
+        top:84px;
+        left:84px;
+    }
+}

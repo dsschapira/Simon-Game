@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--<link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">-->
+        <link rel="stylesheet" href="animate.css">
+        <link rel="stylesheet" href="styles.css">
+
+        <title>Simon</title>
+    </head>
+    <body>
+        <div id="play-area" class="mt-5">
+            <div id="simon-machine">
+                <div id="buttons-container">
+                    <!--<div class="row mb-4">-->
+                        <div id="red"   class="gameButton"></div>
+                        <div id="green" class="gameButton"></div>
+                    <!--</div>-->
+                    <div id="middle-circle-container">
+                        <div id="middle-circle">
+                            <div id="display-container" class="">
+                                <div id="display"></div>
+                            </div>
+                            <div id="start-button-container">
+                                <button></button>
+                                <p>Start</p>
+                            </div>
+                            <div id="on-slider-container">
+                                <div id="on-slider"></div>
+                                <p>On/Off</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="row">-->
+                        <div id="blue"  class="gameButton"></div>
+                        <div id="yellow"class="gameButton"></div>
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+        <script src="./jquery/jquery-3.2.1.min.js"></script>
+        <!--<script src="./tether/dist/js/tether.min.js"></script>
+        <script src="./bootstrap/js/bootstrap.min.js"></script>-->
+        <script src="main.js"></script> <!--Make sure jquery is loaded before custom jquery code or boostrap code-->
+    </body>
+</html>
