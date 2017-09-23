@@ -78,6 +78,12 @@ button{
     position:absolute;
     z-index:8;
 }
+#display-container{
+    background-color:black;
+    position:absolute;
+    border: 1.5px solid darkgrey;
+    z-index:6;
+}
 
 
 
@@ -125,13 +131,12 @@ button{
         left:20px;
     }
     button{
-        width:20px;
-        height:20px;
+        width:25px;
+        height:25px;
     }
     #start-button-container{
         top:60px;
-        left:140px;
-        width:21px;
+        left:130px;
     }
     #on-slider-container{
         height:21px;
@@ -140,6 +145,12 @@ button{
     #on-off-section{
         top:125px;
         left:55px;
+    }
+    #display-container{
+        height: 65px;
+        width: 65px;
+        top:52px;
+        left:17px;
     }
 }
 @media (max-width: 549px){
@@ -207,5 +218,11 @@ button{
         top:68px;
         left:27px;
         width:60px;
+    }
+    #display-container{
+        height: 35px;
+        width: 35px;
+        top:30px;
+        left:36.5px;
     }
 }
