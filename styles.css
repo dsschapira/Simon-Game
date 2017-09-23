@@ -39,13 +39,42 @@
     border-radius:50%;
     margin:0 auto;
     background-color:black;
+    z-index:4;
+    position:relative;
+}
+#display-container{
+    border-radius:50%;
     position:absolute;
-    z-index:1;
-    position:relative !important;
+    z-index:5;
+    background-color:silver;
 }
 .gameButton{
     display: block;
     position: absolute;
+}
+#on-slider-container{
+    background-color:cadetblue;
+}
+#on-slider{
+    width:50%;
+    height:100%;
+    background-color:black;
+    color:darkgrey;
+    float:left;
+    text-align:center;
+}
+#start-button-container{
+    position:absolute;
+    z-index:7;
+}
+button{
+    background-color:green;
+    border-radius:50%;
+    position:relative;
+}
+#on-off-section{
+    position:absolute;
+    z-index:8;
 }
 
 
@@ -87,6 +116,29 @@
         top: 140px;
         left: 140px;
     }
+    #display-container{
+        width:150px;
+        height:150px;
+        top:35px;
+        left:35px;
+    }
+    button{
+        width:20px;
+        height:20px;
+    }
+    #start-button-container{
+        top:75px;
+        left:140px;
+        width:21px;
+    }
+    #on-slider-container{
+        height:21px;
+        width:60px;
+    }
+    #on-off-section{
+        top:130px;
+        left:80px;
+    }
 }
 @media (max-width: 549px){
     #play-area{
@@ -126,5 +178,11 @@
     #middle-circle-container{
         top:84px;
         left:84px;
+    }
+    #display-container{
+        width:90px;
+        height:90px;
+        top:21px;
+        left:21px;
     }
 }
