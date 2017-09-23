@@ -75,6 +75,9 @@ button{
     position:relative;
     margin-top:3px;
 }
+button:focus{
+    outline:0;
+}
 #on-off-section{
     position:absolute;
     z-index:8;
