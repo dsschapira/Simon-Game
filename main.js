@@ -10,6 +10,14 @@ class Game {
     addToSequence(val){
         this.sequence.push(val);
     }
+    toggleStrict(){
+        if(this.strict === true){
+            this.strict = false;
+        }
+        else{
+            this.strict = true;
+        }
+    }
 }
 //End Classes
 
@@ -25,20 +33,46 @@ function turnOnOff(game){
 
     if(document.querySelector("#on-slider").classList.value==="game-turned-on"){
         TURNED_ON = true;
+        return true;
+    }else{
+        TURNED_ON = false;
+        return false;
     }
     
-    game = new Game();
+    
 }
 
+function strictBtnToggle(game){
+    game.toggleStrict();
+    if(game.strict){
+        document.querySelector("#strict-indicator").style['background-color'] = 'red';
+    }
+    else{
+        document.querySelector("#strict-indicator").style['background-color'] = 'black';
+    }
+}
 //End Callable Functions
 
 
 //Page Ready
 document.addEventListener("DOMContentLoaded", function() { //start doing things once the DOM is ready to be manipulated
-    var game;
+    var game ="";
 
     document.querySelector('#on-slider').addEventListener('click',function(){
-        turnOnOff(game); //initialize new Game object
+        let on = turnOnOff(); //initialize new Game object
+        if(on){
+            game = new Game();
+        }else{
+            game = "";
+        }
+        console.log(game);
+    });
+
+    document.querySelector("#strict-btn").addEventListener('click',function(){
+        if(game!==""){
+            strictBtnToggle(game);
+            console.log("Got Here!");
+        }
     });
 
 });
