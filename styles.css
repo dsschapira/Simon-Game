@@ -119,18 +119,18 @@ button{
         left: 140px;
     }
     #display-container{
-        width:150px;
-        height:150px;
-        top:35px;
-        left:35px;
+        width:180px;
+        height:180px;
+        top:20px;
+        left:20px;
     }
     button{
         width:20px;
         height:20px;
     }
     #start-button-container{
-        top:75px;
-        left:140px;
+        top:85px;
+        left:160px;
         width:21px;
     }
     #on-slider-container{
@@ -138,7 +138,7 @@ button{
         width:60px;
     }
     #on-off-section{
-        top:130px;
+        top:150px;
         left:80px;
     }
 }
@@ -182,9 +182,28 @@ button{
         left:84px;
     }
     #display-container{
-        width:90px;
-        height:90px;
-        top:21px;
-        left:21px;
+        width:108px;
+        height:108px;
+        top:12px;
+        left:12px;
+    }
+    button{
+        width:15px;
+        height:15px;
+    }
+    #start-button-container{
+        top:40px;
+        left:83px;
+        width:21px;
+    }
+    #on-slider-container{
+        height:12px;
+        width:50px;
+        font-size:50%;
+    }
+    #on-off-section{
+        top:80px;
+        left:42px;
+        width:60px;
     }
 }
