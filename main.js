@@ -4,8 +4,9 @@ class Game {
         this.init(); //make the constructor call init so that we can wipe the object if necessary.
     }
     init(){
+        this.on = true;
         this.strict = false;
-        this.sequence = [];
+        this.sequence = getSequence();
     }
     addToSequence(val){
         this.sequence.push(val);
@@ -21,7 +22,22 @@ class Game {
 }
 //End Classes
 
-//Begin Callable Functions
+//misc. Functions
+function getSequence(){
+    let buttons = ["red","green","yellow","blue"];
+    let retArr = [];
+    while(retArr.length<20){
+        let button = buttons[Math.floor(Math.random()*4)];
+        retArr.push(button);
+    }
+
+    return retArr;
+}
+
+
+//end misc.Functions
+
+//Begin Button Functions
 
 function turnOnOff(game){
     document.querySelector("#on-slider").classList.toggle('game-turned-on');
@@ -44,7 +60,44 @@ function strictBtnToggle(game){
         document.querySelector("#strict-indicator").style['background-color'] = 'black';
     }
 }
-//End Callable Functions
+//End Button Functions
+
+//Main Gameplay Functions
+function compTurn(sequence,game){
+    return new Promise(resolve =>{
+        resolve(sequence);
+    });
+}
+
+function playerTurn(sequence,game){
+    return new Promise(resolve =>{
+        resolve();
+    });
+}
+
+function playGame(game){
+
+    for(let round = 1; round <= game.sequence.length; round++){ //start round at 1 to use as round counter output
+        let play_sequence = [];
+        for(let turn_index=0; turn_index<round; turn_index++){ //which # button-choice for this round we are on
+            play_sequence.push(game.sequence[turn_index]);
+
+            if(game.on){
+                let this_turn = async function(seq,game){
+                    return await compTurn(seq,game);
+                } 
+                this_turn(play_sequence,game).then(function(){
+                    let player_turn = async function(seq,game){
+                        return await playerTurn(seq,game);
+                    }
+                    player_turn(play_sequence,game);
+                });
+            }
+        }
+    }
+}
+
+//End Main Gameplay Functions
 
 
 //Page Ready
@@ -66,4 +119,8 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
         }
     });
 
+    document.querySelector("#start-btn").addEventListener('click',function(game){
+        playGame(game);
+        //add initializing display here
+    });
 });
