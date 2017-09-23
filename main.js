@@ -76,7 +76,7 @@ function playerTurn(sequence,game){
 }
 
 function playGame(game){
-
+    
     for(let round = 1; round <= game.sequence.length; round++){ //start round at 1 to use as round counter output
         let play_sequence = [];
         for(let turn_index=0; turn_index<round; turn_index++){ //which # button-choice for this round we are on
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
         }
     });
 
-    document.querySelector("#start-btn").addEventListener('click',function(game){
+    document.querySelector("#start-btn").addEventListener('click',function(){
         playGame(game);
         //add initializing display here
     });
