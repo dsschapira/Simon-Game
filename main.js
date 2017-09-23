@@ -65,13 +65,11 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
         }else{
             game = "";
         }
-        console.log(game);
     });
 
     document.querySelector("#strict-btn").addEventListener('click',function(){
         if(game!==""){
             strictBtnToggle(game);
-            console.log("Got Here!");
         }
     });
 
