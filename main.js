@@ -21,21 +21,14 @@ class Game {
 }
 //End Classes
 
-//Globals
-TURNED_ON = false;
-//End Globals
-
-
 //Begin Callable Functions
 
 function turnOnOff(game){
     document.querySelector("#on-slider").classList.toggle('game-turned-on');
 
     if(document.querySelector("#on-slider").classList.value==="game-turned-on"){
-        TURNED_ON = true;
         return true;
     }else{
-        TURNED_ON = false;
         return false;
     }
     
