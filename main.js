@@ -79,20 +79,21 @@ function playGame(game){
     
     for(let round = 1; round <= game.sequence.length; round++){ //start round at 1 to use as round counter output
         let play_sequence = [];
+
         for(let turn_index=0; turn_index<round; turn_index++){ //which # button-choice for this round we are on
             play_sequence.push(game.sequence[turn_index]);
+        }
 
-            if(game.on){
-                let this_turn = async function(seq,game){
-                    return await compTurn(seq,game);
-                } 
-                this_turn(play_sequence,game).then(function(){
-                    let player_turn = async function(seq,game){
-                        return await playerTurn(seq,game);
-                    }
-                    player_turn(play_sequence,game);
-                });
-            }
+        if(game.on){
+            let this_turn = async function(seq,game){
+                return await compTurn(seq,game);
+            } 
+            this_turn(play_sequence,game).then(function(){
+                let player_turn = async function(seq,game){
+                    return await playerTurn(seq,game);
+                }
+                player_turn(play_sequence,game);
+            });
         }
     }
 }
