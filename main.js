@@ -6,7 +6,10 @@ class Game {
     init(){
         this.on = true;
         this.strict = false;
+    }
+    restart(){
         this.sequence = getSequence();
+        this.round = 10;
     }
     addToSequence(val){
         this.sequence.push(val);
@@ -18,6 +21,9 @@ class Game {
         else{
             this.strict = true;
         }
+    }
+    nextRound(){
+        this.round++;
     }
 }
 //End Classes
@@ -63,41 +69,55 @@ function strictBtnToggle(game){
 //End Button Functions
 
 //Main Gameplay Functions
-function compTurn(sequence,game){
-    return new Promise(resolve =>{
-        resolve(sequence);
-    });
+function allTurns(game,audio,index){
+
+    var timing = game.round<5? 1200: 700; 
+    setTimeout(function(){
+
+        let buttonId = game.sequence[index];
+        let sound = audio[game.sequence[index]];
+        performTurn(buttonId,sound);
+        if(index<game.round){
+            index++;
+            allTurns(game,audio,index);
+        }
+    },timing);
 }
 
-function playerTurn(sequence,game){
-    return new Promise(resolve =>{
-        resolve();
-    });
+function performTurn(buttonId,audio){
+    //buttonId is simply a string of "red","blue","green",or "yellow".
+    let button = document.getElementById(buttonId);
+    let newColor = buttonId!=="yellow"?"dark"+buttonId:"palegoldenrod";
+    button.style.backgroundColor = newColor;
+    audio.play();
+    setTimeout(function(){
+        button.style.backgroundColor = buttonId;
+    },200);
+    //!!! At somepoint replace variable newColor with a smarter way to get new color.
 }
 
-function playGame(game){
-    
-    for(let round = 1; round <= game.sequence.length; round++){ //start round at 1 to use as round counter output
-        let play_sequence = [];
+function compTurn(game,audio){
+    game.nextRound(); //first time through, game.round = 1 now.
+    let index=0;
+    allTurns(game,audio,index);
+}
 
-        for(let turn_index=0; turn_index<round; turn_index++){ //which # button-choice for this round we are on
-            play_sequence.push(game.sequence[turn_index]);
-        }
+function playerTurn(game,audio){
 
-        if(game.on){
-            let this_turn = async function(seq,game){
-                return await compTurn(seq,game);
-            } 
-            this_turn(play_sequence,game).then(function(){
-                let player_turn = async function(seq,game){
-                    return await playerTurn(seq,game);
-                }
-                player_turn(play_sequence,game);
-            });
-            /*!!!!!!!Current issue here!!!!!!!!
-            This will run through ALL of the computer turns first, THEN all of the player turns.
-            */
-        }
+}
+
+/*Instead of async/await
+  Refactor this to use event listeners
+  Create custom event for "Computer Done"
+  Triggeringt this will trigger player turn
+  Correct play will re-trigger computer.
+  End looping with incorrect play(in strict, only restart in non-strict) 
+  or with turn-off*/
+function playGame(game,cEvent){
+    game.restart(); //restart gets the Sequence and resets round to 0.
+
+    if(game.on){
+        let temp = !document.dispatchEvent(cEvent);
     }
 }
 
@@ -108,13 +128,29 @@ function playGame(game){
 document.addEventListener("DOMContentLoaded", function() { //start doing things once the DOM is ready to be manipulated
     var game ="";
 
+    //Create Custom Events
+    var compTurnEvent = new CustomEvent("compTurnEvent");
+    var playerTurnEvent = new CustomEvent("playerTurnEvent",{
+        correct:true
+    });
+    //End Custom Events
+
     //Load Sounds
     let redAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3");
     let blueAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound2.mp3");
     let greenAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound3.mp3");
     let yellowAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound4.mp3");
+    var audioFiles = {"red":redAudio,"blue":blueAudio,"green":greenAudio,"yellow":yellowAudio};
     //End Sound Loading
-    
+
+    document.addEventListener("compTurnEvent",function(){
+        compTurn(game,audioFiles);
+    });
+
+    document.addEventListener("playerTurnEvent",function(){
+        playerTurn(game,audioFiles);
+    });
+
     document.querySelector('#on-slider').addEventListener('click',function(){
         let on = turnOnOff(); //initialize new Game object
         if(on){
@@ -131,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
     });
 
     document.querySelector("#start-btn").addEventListener('click',function(){
-        playGame(game);
+        playGame(game,compTurnEvent);
         //add initializing display here
     });
 });
