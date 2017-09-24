@@ -108,6 +108,13 @@ function playGame(game){
 document.addEventListener("DOMContentLoaded", function() { //start doing things once the DOM is ready to be manipulated
     var game ="";
 
+    //Load Sounds
+    let redAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3");
+    let blueAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound2.mp3");
+    let greenAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound3.mp3");
+    let yellowAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound4.mp3");
+    //End Sound Loading
+    
     document.querySelector('#on-slider').addEventListener('click',function(){
         let on = turnOnOff(); //initialize new Game object
         if(on){
