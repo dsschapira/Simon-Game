@@ -7,10 +7,13 @@ class Game {
         this.on = true;
         this.strict = false;
         this.events = getEvents();
+        this.playerTurn = false;
+        this.playerSequence = []
     }
     restart(){
         this.sequence = getSequence();
         this.round = 0;
+        this.playerTurn = false;
     }
     addToSequence(val){
         this.sequence.push(val);
@@ -29,19 +32,17 @@ class Game {
     turnOff(){
         this.on = false;
     }
-}
-
-class Turn {
-    constructor(){
-        this.init();
+    playerRound(){
+        this.playerTurn = true;
     }
-    init(){
-        this.sequence = [];
+    notPlayerRound(){
+        this.playerTurn = false;
     }
     addChoice(val){
-        this.sequence.push(val);
+        this.playerSequence.push(val);
     }
 }
+
 //End Classes
 
 //misc. Functions
@@ -66,8 +67,6 @@ function getSequence(){
 
     return retArr;
 }
-
-
 //end misc.Functions
 
 //Begin Button Functions
@@ -104,12 +103,12 @@ function allTurns(game,audio,index){
         let buttonId = game.sequence[index];
         let sound = audio[game.sequence[index]];
         performTurn(buttonId,sound);
-        if(index===game.round){
+        if(index===game.round-1){
             setTimeout(function(){
                 let temp = !document.dispatchEvent(game.events["player"]);
-            },1000);//Allow 1 second before the player turn is triggered 
+            },700);//Allow 0.7 seconds before the player turn is triggered 
         }
-        if(index<game.round){
+        else if(index<game.round){
             index++;
             allTurns(game,audio,index);
         }
@@ -129,37 +128,50 @@ function performTurn(buttonId,audio){
 }
 
 function compTurn(game,audio){
-    game.nextRound(); //first time through, game.round = 1 now.
-    let index=1;
+    game.nextRound(); //First time through this will be 1, so we can use it for round counter as well
+    game.notPlayerRound();
+    let index=0;
     allTurns(game,audio,index);
 }
 
 function playerTurn(game,audio){
-    var currentTurn = new Turn();
-    var colors = ["blue","red","green","yellow"];
-    let buttons = document.getElementsByClassName("gameButton");
-    
-    for(var index in buttons){
-        console.log(index);
-        if(index<4){
-            console.log(buttons[index]);
-            buttons[index].addEventListener(
-                'click',
-                (e) => {
-                    if(game.on){
-                        buttonClickFcn(e);
-                    }
-                }
-            );
-        }
-    }
+    game.playerRound();
+
+
     console.log("It is the player's turn!");
 }
 
-function buttonClickFcn(e){
-    console.log("Clicked");
-    console.log(e);
-    console.log(e.target);
+function buttonClickFcn(event,game,audioFiles){
+    game.addChoice(event.target.id);
+    //Check here if it's correct
+    checkChoices(game,event.traget.id,audioFiles[event.target.id]);
+    
+    console.log(game);
+}
+
+function checkChoices(game,buttonId,sound){
+    let subSequence = game.sequence.slice(0,game.playerSequence.length);
+
+    if(arraysEqual(subSequence,game.playerSequence)){
+        performTurn(buttonId,sound);
+    }
+    else{
+        //Need a soundbite for erroring
+    }
+}
+
+function arraysEqual(a, b) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+  
+    // If you don't care about the order of the elements inside
+    // the array, you should sort both arrays here.
+  
+    for (var i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
 }
 
 /*Instead of async/await
@@ -221,4 +233,13 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
         }
         //add initializing display here
     });
+
+    let buttons = document.querySelectorAll('.gameButton');
+    for(let i =0; i<buttons.length; i++){
+        buttons[i].addEventListener('click',function(e){
+            if(game.on && game.playerTurn){
+                buttonClickFcn(e,game,audioFiles);
+            }
+        });
+    }
 });
