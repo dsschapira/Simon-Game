@@ -10,7 +10,7 @@ class Game {
     }
     restart(){
         this.sequence = getSequence();
-        this.round = 10;
+        this.round = 0;
     }
     addToSequence(val){
         this.sequence.push(val);
@@ -25,6 +25,21 @@ class Game {
     }
     nextRound(){
         this.round++;
+    }
+    turnOff(){
+        this.on = false;
+    }
+}
+
+class Turn {
+    constructor(){
+        this.init();
+    }
+    init(){
+        this.sequence = [];
+    }
+    addChoice(val){
+        this.sequence.push(val);
     }
 }
 //End Classes
@@ -115,12 +130,36 @@ function performTurn(buttonId,audio){
 
 function compTurn(game,audio){
     game.nextRound(); //first time through, game.round = 1 now.
-    let index=0;
+    let index=1;
     allTurns(game,audio,index);
 }
 
 function playerTurn(game,audio){
+    var currentTurn = new Turn();
+    var colors = ["blue","red","green","yellow"];
+    let buttons = document.getElementsByClassName("gameButton");
+    
+    for(var index in buttons){
+        console.log(index);
+        if(index<4){
+            console.log(buttons[index]);
+            buttons[index].addEventListener(
+                'click',
+                (e) => {
+                    if(game.on){
+                        buttonClickFcn(e);
+                    }
+                }
+            );
+        }
+    }
     console.log("It is the player's turn!");
+}
+
+function buttonClickFcn(e){
+    console.log("Clicked");
+    console.log(e);
+    console.log(e.target);
 }
 
 /*Instead of async/await
@@ -166,18 +205,20 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
         if(on){
             game = new Game();
         }else{
-            game = "";
+            game.turnOff();
         }
     });
 
     document.querySelector("#strict-btn").addEventListener('click',function(){
-        if(game!==""){
+        if(game.on){
             strictBtnToggle(game);
         }
     });
 
     document.querySelector("#start-btn").addEventListener('click',function(){
-        playGame(game);
+        if(game.on){
+            playGame(game);
+        }
         //add initializing display here
     });
 });
