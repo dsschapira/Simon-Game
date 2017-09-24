@@ -6,6 +6,7 @@ class Game {
     init(){
         this.on = true;
         this.strict = false;
+        this.events = getEvents();
     }
     restart(){
         this.sequence = getSequence();
@@ -29,6 +30,17 @@ class Game {
 //End Classes
 
 //misc. Functions
+function getEvents(){
+    var compTurnEvent = new CustomEvent("compTurnEvent");
+    var playerTurnEvent = new CustomEvent("playerTurnEvent");
+
+    let events = {
+        "computer" : compTurnEvent,
+        "player": playerTurnEvent
+    };
+
+    return events;
+}
 function getSequence(){
     let buttons = ["red","green","yellow","blue"];
     let retArr = [];
@@ -71,12 +83,17 @@ function strictBtnToggle(game){
 //Main Gameplay Functions
 function allTurns(game,audio,index){
 
-    var timing = game.round<5? 1200: 700; 
+    var timing = game.round<5? 1200: 700; //can make a better function for this later
     setTimeout(function(){
 
         let buttonId = game.sequence[index];
         let sound = audio[game.sequence[index]];
         performTurn(buttonId,sound);
+        if(index===game.round){
+            setTimeout(function(){
+                let temp = !document.dispatchEvent(game.events["player"]);
+            },1000);//Allow 1 second before the player turn is triggered 
+        }
         if(index<game.round){
             index++;
             allTurns(game,audio,index);
@@ -103,7 +120,7 @@ function compTurn(game,audio){
 }
 
 function playerTurn(game,audio){
-
+    console.log("It is the player's turn!");
 }
 
 /*Instead of async/await
@@ -113,11 +130,11 @@ function playerTurn(game,audio){
   Correct play will re-trigger computer.
   End looping with incorrect play(in strict, only restart in non-strict) 
   or with turn-off*/
-function playGame(game,cEvent){
+function playGame(game){
     game.restart(); //restart gets the Sequence and resets round to 0.
 
     if(game.on){
-        let temp = !document.dispatchEvent(cEvent);
+        let temp = !document.dispatchEvent(game.events["computer"]);
     }
 }
 
@@ -127,13 +144,6 @@ function playGame(game,cEvent){
 //Page Ready
 document.addEventListener("DOMContentLoaded", function() { //start doing things once the DOM is ready to be manipulated
     var game ="";
-
-    //Create Custom Events
-    var compTurnEvent = new CustomEvent("compTurnEvent");
-    var playerTurnEvent = new CustomEvent("playerTurnEvent",{
-        correct:true
-    });
-    //End Custom Events
 
     //Load Sounds
     let redAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3");
@@ -167,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
     });
 
     document.querySelector("#start-btn").addEventListener('click',function(){
-        playGame(game,compTurnEvent);
+        playGame(game);
         //add initializing display here
     });
 });
