@@ -143,17 +143,12 @@ function compTurn(game,audio){
 
 function playerTurn(game,audio){
     game.playerRound();
-
-
-    console.log("It is the player's turn!");
 }
 
 function buttonClickFcn(event,game,audioFiles){
     game.addChoice(event.target.id);
     //Check here if it's correct
     checkChoices(game,event.target.id,audioFiles);
-    
-    console.log(game);
 }
 
 function checkChoices(game,buttonId,audioFiles){
@@ -163,7 +158,11 @@ function checkChoices(game,buttonId,audioFiles){
     if(arraysEqual(subSequence,game.playerSequence)){
         //replace arraysEqual with checking the last entered thing.
         performTurn(buttonId,sound);
-        if(game.playerSequence.length === game.round){
+
+        if(arraysEqual(game.playerSequence,game.sequence)){
+            endGame(audioFiles);
+        }
+        else if(game.playerSequence.length === game.round){
             let temp = !document.dispatchEvent(game.events["computer"]);
         }
     }
@@ -196,19 +195,31 @@ function arraysEqual(a, b) {
     return true;
 }
 
-/*Instead of async/await
-  Refactor this to use event listeners
-  Create custom event for "Computer Done"
-  Triggeringt this will trigger player turn
-  Correct play will re-trigger computer.
-  End looping with incorrect play(in strict, only restart in non-strict) 
-  or with turn-off*/
 function playGame(game){
     game.restart(); //restart gets the Sequence and resets round to 0.
 
     if(game.on){
         let temp = !document.dispatchEvent(game.events["computer"]);
     }
+}
+
+function endGame(audio,reps=0){
+    setTimeout(function(){
+        audio['red'].play();
+        audio['yellow'].play();
+        clickBtn('red');
+        clickBtn('yellow');
+        setTimeout(function(){
+            audio['blue'].play();
+            audio['green'].play();
+            clickBtn('blue');
+            clickBtn('green');
+        },400);
+        if(reps<10){
+            reps++;
+            endGame(audio,reps);
+        }
+    },300);
 }
 
 //End Main Gameplay Functions
@@ -250,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
     });
 
     document.querySelector("#start-btn").addEventListener('click',function(){
+        console.log(game);
         if(game.on){
             playGame(game);
         }
