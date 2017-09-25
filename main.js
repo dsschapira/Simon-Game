@@ -144,7 +144,7 @@ function playerTurn(game,audio){
 function buttonClickFcn(event,game,audioFiles){
     game.addChoice(event.target.id);
     //Check here if it's correct
-    checkChoices(game,event.traget.id,audioFiles[event.target.id]);
+    checkChoices(game,event.target.id,audioFiles[event.target.id]);
     
     console.log(game);
 }
