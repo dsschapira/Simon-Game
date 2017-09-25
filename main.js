@@ -8,12 +8,13 @@ class Game {
         this.strict = false;
         this.events = getEvents();
         this.playerTurn = false;
-        this.playerSequence = []
+        this.playerSequence = [];
     }
     restart(){
         this.sequence = getSequence();
         this.round = 0;
         this.playerTurn = false;
+        this.playerSequence = [];
     }
     addToSequence(val){
         this.sequence.push(val);
@@ -169,6 +170,15 @@ function checkChoices(game,buttonId,audioFiles){
     else{
         clickBtn(buttonId);
         //Need a soundbite for erroring
+
+        if(!game.strict){
+            let index = 0;
+            game.notPlayerRound();
+            allTurns(game,audioFiles,index);
+        }
+        else{
+            playGame(game);
+        }
     }
 }
 
