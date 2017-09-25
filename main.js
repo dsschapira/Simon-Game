@@ -34,6 +34,7 @@ class Game {
     }
     playerRound(){
         this.playerTurn = true;
+        this.playerSequence = [];
     }
     notPlayerRound(){
         this.playerTurn = false;
@@ -117,14 +118,19 @@ function allTurns(game,audio,index){
 
 function performTurn(buttonId,audio){
     //buttonId is simply a string of "red","blue","green",or "yellow".
+    audio.play();
+    clickBtn(buttonId);
+    //!!! At somepoint replace variable newColor with a smarter way to get new color.
+}
+
+function clickBtn(buttonId){
     let button = document.getElementById(buttonId);
     let newColor = buttonId!=="yellow"?"dark"+buttonId:"palegoldenrod";
     button.style.backgroundColor = newColor;
-    audio.play();
+    
     setTimeout(function(){
         button.style.backgroundColor = buttonId;
     },200);
-    //!!! At somepoint replace variable newColor with a smarter way to get new color.
 }
 
 function compTurn(game,audio){
@@ -144,18 +150,24 @@ function playerTurn(game,audio){
 function buttonClickFcn(event,game,audioFiles){
     game.addChoice(event.target.id);
     //Check here if it's correct
-    checkChoices(game,event.target.id,audioFiles[event.target.id]);
+    checkChoices(game,event.target.id,audioFiles);
     
     console.log(game);
 }
 
-function checkChoices(game,buttonId,sound){
+function checkChoices(game,buttonId,audioFiles){
     let subSequence = game.sequence.slice(0,game.playerSequence.length);
+    let sound = audioFiles[buttonId];
 
     if(arraysEqual(subSequence,game.playerSequence)){
+        //replace arraysEqual with checking the last entered thing.
         performTurn(buttonId,sound);
+        if(game.playerSequence.length === game.round){
+            let temp = !document.dispatchEvent(game.events["computer"]);
+        }
     }
     else{
+        clickBtn(buttonId);
         //Need a soundbite for erroring
     }
 }
