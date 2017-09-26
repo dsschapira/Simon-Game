@@ -57,6 +57,13 @@ html{
     display: block;
     position: absolute;
 }
+.gameButton:hover{
+  cursor:pointer;
+}
+button:hover{
+  cursor:pointer;
+}
+
 #on-slider-container{
     background-color:cadetblue;
 }
@@ -110,6 +117,17 @@ button:focus{
     border: 1.5px solid darkgrey;
     border-radius: 50%;
     position:absolute;
+}
+#author-container{
+  text-align:center;
+}
+a{
+  color:black;
+  text-decoration:none;
+}
+a:hover{
+  color:blue;
+  text-decoration:underline;
 }
 
 
