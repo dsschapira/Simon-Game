@@ -100,19 +100,20 @@ function strictBtnToggle(game){
 function allTurns(game,audio,index){
 
     var timing = game.round<5? 1200: 700; //can make a better function for this later
-    setTimeout(function(){
-
-        let buttonId = game.sequence[index];
-        let sound = audio[game.sequence[index]];
-        performTurn(buttonId,sound);
-        if(index===game.round-1){
-            setTimeout(function(){
-                let temp = !document.dispatchEvent(game.events["player"]);
-            },700);//Allow 0.7 seconds before the player turn is triggered 
-        }
-        else if(index<game.round){
-            index++;
-            allTurns(game,audio,index);
+    setTimeout(function(){ 
+        if(game.on){ //if the game is turned off while turn is going this will stop it.
+            let buttonId = game.sequence[index];
+            let sound = audio[game.sequence[index]];
+            performTurn(buttonId,sound);
+            if(index===game.round-1){
+                setTimeout(function(){
+                    let temp = !document.dispatchEvent(game.events["player"]);
+                },700);//Allow 0.7 seconds before the player turn is triggered 
+            }
+            else if(index<game.round){
+                index++;
+                allTurns(game,audio,index);
+            }
         }
     },timing);
 }
@@ -267,6 +268,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
             game = new Game();
         }else{
             game.turnOff();
+            document.querySelector("#strict-indicator").style['background-color'] = 'black';
         }
     });
 
