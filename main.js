@@ -32,6 +32,7 @@ class Game {
     }
     turnOff(){
         this.on = false;
+        this.playerTurn = false;
     }
     playerRound(){
         this.playerTurn = true;
@@ -45,6 +46,35 @@ class Game {
     }
 }
 
+class Timer {
+    constructor(){
+        this.init();
+    }
+    init(){
+        this.countdown = 10000;
+    }
+    setCountdown(val=10000){
+        this.countdown = val;
+    }
+    beginCountdown(game){
+        this.timerFcn = window.setTimeout(function(){
+            game.addChoice("errVal");
+            let tempb = !document.getElementById('blue').click();
+            let tempr = !document.getElementById('red').click();
+            let tempy = !document.getElementById('yellow').click();
+            let tempg = !document.getElementById('green').click();
+        },this.countdown);
+    }
+    resetCountdown(game){
+        window.clearTimeout(this.timerFcn);
+        this.timerFcn = undefined;
+        this.beginCountdown(game);
+    }
+    Off(){
+        window.clearTimeout(this.timerFcn);
+        this.timerFcn = undefined;
+    }
+}
 //End Classes
 
 //misc. Functions
@@ -158,20 +188,38 @@ function displayRound(game){
     document.getElementById("display").innerHTML = (game.round>=10)?game.round:"0"+game.round;
 }
 
-function compTurn(game,audio){
+function compTurn(game,audio,timer){
+    timer.Off();
     game.nextRound(); //First time through this will be 1, so we can use it for round counter as well
+    setTimer(game,timer);
     game.notPlayerRound();
     let index=0;
     allTurns(game,audio,index);
 }
 
-function playerTurn(game,audio){
+function playerTurn(game,timer){
     game.playerRound();
+    timer.resetCountdown(game);
 }
 
-function buttonClickFcn(event,game,audioFiles){
+function setTimer(game,timer){
+    if(game.round>=13){
+        timer.setCountdown(3000);
+    }
+    else if(game.round>=9){
+        timer.setCountdown(4000);
+    }
+    else if(game.round>=5){
+        timer.setCountdown(5000);
+    }
+    else{
+        timer.setCountdown(10000);
+    }
+}
+
+function buttonClickFcn(event,game,audioFiles,timer){
     game.addChoice(event.target.id);
-    //Check here if it's correct
+    timer.resetCountdown(game);
     checkChoices(game,event.target.id,audioFiles);
 }
 
@@ -268,6 +316,8 @@ function endGame(audio,reps=0){
 //Page Ready
 document.addEventListener("DOMContentLoaded", function() { //start doing things once the DOM is ready to be manipulated
     var game ="";
+    var timer ="";
+
 
     //Load Sounds
     let redAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3");
@@ -278,11 +328,12 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
     //End Sound Loading
 
     document.addEventListener("compTurnEvent",function(){
-        compTurn(game,audioFiles);
+        compTurn(game,audioFiles,timer);
     });
 
     document.addEventListener("playerTurnEvent",function(){
-        playerTurn(game,audioFiles);
+        playerTurn(game,timer);
+        //start timer here
     });
 
     document.querySelector('#on-slider').addEventListener('click',function(){
@@ -292,6 +343,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
             document.getElementById("display").innerHTML = "- -";
         }else{
             game.turnOff();
+            timer.Off();
             document.querySelector("#strict-indicator").style['background-color'] = 'black';
             document.getElementById("display").innerHTML = "";
         }
@@ -305,6 +357,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
 
     document.querySelector("#start-btn").addEventListener('click',function(){
         console.log(game);
+        timer = new Timer();
         if(game.on){
             playGame(game);
         }
@@ -315,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
     for(let i =0; i<buttons.length; i++){
         buttons[i].addEventListener('click',function(e){
             if(game.on && game.playerTurn){
-                buttonClickFcn(e,game,audioFiles);
+                buttonClickFcn(e,game,audioFiles,timer);
             }
         });
     }

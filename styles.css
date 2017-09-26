@@ -62,6 +62,9 @@
     color:darkgrey;
     text-align:center;
 }
+#on-slider:hover{
+    cursor:pointer;
+}
 .game-turned-on{
     float:right;
 }
