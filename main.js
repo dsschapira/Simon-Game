@@ -6,7 +6,15 @@ class Game {
     init(){
         this.on = true;
         this.strict = false;
+        this.events = getEvents();
+        this.playerTurn = false;
+        this.playerSequence = [];
+    }
+    restart(){
         this.sequence = getSequence();
+        this.round = 0;
+        this.playerTurn = false;
+        this.playerSequence = [];
     }
     addToSequence(val){
         this.sequence.push(val);
@@ -19,10 +27,38 @@ class Game {
             this.strict = true;
         }
     }
+    nextRound(){
+        this.round++;
+    }
+    turnOff(){
+        this.on = false;
+    }
+    playerRound(){
+        this.playerTurn = true;
+        this.playerSequence = [];
+    }
+    notPlayerRound(){
+        this.playerTurn = false;
+    }
+    addChoice(val){
+        this.playerSequence.push(val);
+    }
 }
+
 //End Classes
 
 //misc. Functions
+function getEvents(){
+    var compTurnEvent = new CustomEvent("compTurnEvent");
+    var playerTurnEvent = new CustomEvent("playerTurnEvent");
+
+    let events = {
+        "computer" : compTurnEvent,
+        "player": playerTurnEvent
+    };
+
+    return events;
+}
 function getSequence(){
     let buttons = ["red","green","yellow","blue"];
     let retArr = [];
@@ -33,8 +69,6 @@ function getSequence(){
 
     return retArr;
 }
-
-
 //end misc.Functions
 
 //Begin Button Functions
@@ -63,39 +97,145 @@ function strictBtnToggle(game){
 //End Button Functions
 
 //Main Gameplay Functions
-function compTurn(sequence,game){
-    return new Promise(resolve =>{
-        resolve(sequence);
-    });
+function allTurns(game,audio,index){
+
+    var timing = game.round<5? 1200: 700; //can make a better function for this later
+    setTimeout(function(){
+
+        let buttonId = game.sequence[index];
+        let sound = audio[game.sequence[index]];
+        performTurn(buttonId,sound);
+        if(index===game.round-1){
+            setTimeout(function(){
+                let temp = !document.dispatchEvent(game.events["player"]);
+            },700);//Allow 0.7 seconds before the player turn is triggered 
+        }
+        else if(index<game.round){
+            index++;
+            allTurns(game,audio,index);
+        }
+    },timing);
 }
 
-function playerTurn(sequence,game){
-    return new Promise(resolve =>{
-        resolve();
-    });
+function performTurn(buttonId,audio){
+    //buttonId is simply a string of "red","blue","green",or "yellow".
+    audio.play();
+    clickBtn(buttonId);
+    //!!! At somepoint replace variable newColor with a smarter way to get new color.
+}
+
+function clickBtn(buttonId){
+    let button = document.getElementById(buttonId);
+    let newColor = buttonId!=="yellow"?"dark"+buttonId:"palegoldenrod";
+    button.style.backgroundColor = newColor;
+    
+    setTimeout(function(){
+        button.style.backgroundColor = buttonId;
+    },200);
+}
+
+function compTurn(game,audio){
+    game.nextRound(); //First time through this will be 1, so we can use it for round counter as well
+    game.notPlayerRound();
+    let index=0;
+    allTurns(game,audio,index);
+}
+
+function playerTurn(game,audio){
+    game.playerRound();
+}
+
+function buttonClickFcn(event,game,audioFiles){
+    game.addChoice(event.target.id);
+    //Check here if it's correct
+    checkChoices(game,event.target.id,audioFiles);
+}
+
+function checkChoices(game,buttonId,audioFiles){
+    let subSequence = game.sequence.slice(0,game.playerSequence.length);
+    let sound = audioFiles[buttonId];
+
+    if(arraysEqual(subSequence,game.playerSequence)){
+        //replace arraysEqual with checking the last entered thing.
+        performTurn(buttonId,sound);
+
+        if(arraysEqual(game.playerSequence,game.sequence)){
+            endGame(audioFiles);
+        }
+        else if(game.playerSequence.length === game.round){
+            let temp = !document.dispatchEvent(game.events["computer"]);
+        }
+    }
+    else{
+        clickBtn(buttonId);
+        wrongChoice(audioFiles);
+        
+        setTimeout(function(){
+            if(!game.strict){
+                let index = 0;
+                game.notPlayerRound();
+                allTurns(game,audioFiles,index);
+            }
+            else{
+                playGame(game);
+            }
+        },500);
+    }
+}
+
+function wrongChoice(audio){
+    for(key in audio){
+        audio[key].play();
+        clickBtn(key);
+    }
+    setTimeout(function(){
+        for (key in audio){
+            audio[key].play();
+            clickBtn(key);
+        }
+    },400);
+
+}
+
+function arraysEqual(a, b) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+  
+    // If you don't care about the order of the elements inside
+    // the array, you should sort both arrays here.
+  
+    for (var i = 0; i < a.length; ++i) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
 }
 
 function playGame(game){
-    
-    for(let round = 1; round <= game.sequence.length; round++){ //start round at 1 to use as round counter output
-        let play_sequence = [];
+    game.restart(); //restart gets the Sequence and resets round to 0.
 
-        for(let turn_index=0; turn_index<round; turn_index++){ //which # button-choice for this round we are on
-            play_sequence.push(game.sequence[turn_index]);
-        }
-
-        if(game.on){
-            let this_turn = async function(seq,game){
-                return await compTurn(seq,game);
-            } 
-            this_turn(play_sequence,game).then(function(){
-                let player_turn = async function(seq,game){
-                    return await playerTurn(seq,game);
-                }
-                player_turn(play_sequence,game);
-            });
-        }
+    if(game.on){
+        let temp = !document.dispatchEvent(game.events["computer"]);
     }
+}
+
+function endGame(audio,reps=0){
+    setTimeout(function(){
+        audio['red'].play();
+        audio['yellow'].play();
+        clickBtn('red');
+        clickBtn('yellow');
+        setTimeout(function(){
+            audio['blue'].play();
+            audio['green'].play();
+            clickBtn('blue');
+            clickBtn('green');
+        },400);
+        if(reps<10){
+            reps++;
+            endGame(audio,reps);
+        }
+    },300);
 }
 
 //End Main Gameplay Functions
@@ -105,23 +245,51 @@ function playGame(game){
 document.addEventListener("DOMContentLoaded", function() { //start doing things once the DOM is ready to be manipulated
     var game ="";
 
+    //Load Sounds
+    let redAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound1.mp3");
+    let blueAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound2.mp3");
+    let greenAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound3.mp3");
+    let yellowAudio = new Audio("https://s3.amazonaws.com/freecodecamp/simonSound4.mp3");
+    var audioFiles = {"red":redAudio,"blue":blueAudio,"green":greenAudio,"yellow":yellowAudio};
+    //End Sound Loading
+
+    document.addEventListener("compTurnEvent",function(){
+        compTurn(game,audioFiles);
+    });
+
+    document.addEventListener("playerTurnEvent",function(){
+        playerTurn(game,audioFiles);
+    });
+
     document.querySelector('#on-slider').addEventListener('click',function(){
         let on = turnOnOff(); //initialize new Game object
         if(on){
             game = new Game();
         }else{
-            game = "";
+            game.turnOff();
         }
     });
 
     document.querySelector("#strict-btn").addEventListener('click',function(){
-        if(game!==""){
+        if(game.on){
             strictBtnToggle(game);
         }
     });
 
     document.querySelector("#start-btn").addEventListener('click',function(){
-        playGame(game);
+        console.log(game);
+        if(game.on){
+            playGame(game);
+        }
         //add initializing display here
     });
+
+    let buttons = document.querySelectorAll('.gameButton');
+    for(let i =0; i<buttons.length; i++){
+        buttons[i].addEventListener('click',function(e){
+            if(game.on && game.playerTurn){
+                buttonClickFcn(e,game,audioFiles);
+            }
+        });
+    }
 });
