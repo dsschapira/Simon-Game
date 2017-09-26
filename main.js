@@ -274,9 +274,11 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
         let on = turnOnOff(); //initialize new Game object
         if(on){
             game = new Game();
+            document.getElementById("display").innerHTML = "- -";
         }else{
             game.turnOff();
             document.querySelector("#strict-indicator").style['background-color'] = 'black';
+            document.getElementById("display").innerHTML = "";
         }
     });
 
