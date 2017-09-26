@@ -1,3 +1,8 @@
+html{
+    background-color: #a5ab00;
+    background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+    /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+}
 #play-area{
     margin: 0 auto;
     min-width: 300px;
@@ -96,7 +101,6 @@ button:focus{
     font-weight: bold;
     font-size:180%;
     text-align:center;
-    margin-top:15%;
 }
 #strict-btn{
     background-color:yellow;
@@ -185,6 +189,10 @@ button:focus{
         width: 65px;
         top:52px;
         left:17px;
+    }
+    #display{
+        margin-top:15%;
+        font-size:200%;
     }
 }
 @media (max-width: 549px){

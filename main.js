@@ -295,6 +295,7 @@ function playGame(game){
 
 function endGame(audio,reps=0){
     setTimeout(function(){
+        document.getElementById("display").innerHTML = (document.getElementById('display').innerHTML==="!!")?":)":"!!";
         audio['red'].play();
         audio['yellow'].play();
         clickBtn('red');
@@ -308,6 +309,8 @@ function endGame(audio,reps=0){
         if(reps<10){
             reps++;
             endGame(audio,reps);
+        }else{
+            document.getElementById("display").innerHTML = "- -";
         }
     },300);
 }
@@ -358,7 +361,6 @@ document.addEventListener("DOMContentLoaded", function() { //start doing things 
     });
 
     document.querySelector("#start-btn").addEventListener('click',function(){
-        console.log(game);
         timer = new Timer();
         if(game.on){
             playGame(game);
