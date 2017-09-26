@@ -88,6 +88,13 @@ button:focus{
     border: 1.5px solid darkgrey;
     z-index:6;
 }
+#display{
+    color:red;
+    font-weight: bold;
+    font-size:180%;
+    text-align:center;
+    margin-top:15%;
+}
 #strict-btn{
     background-color:yellow;
 }

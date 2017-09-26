@@ -98,12 +98,16 @@ function strictBtnToggle(game){
 
 //Main Gameplay Functions
 function allTurns(game,audio,index){
-
     var timing = game.round<5? 1200: 700; //can make a better function for this later
     setTimeout(function(){ 
         if(game.on){ //if the game is turned off while turn is going this will stop it.
             let buttonId = game.sequence[index];
             let sound = audio[game.sequence[index]];
+
+            if(index===0){
+                displayRound(game);
+            }
+
             performTurn(buttonId,sound);
             if(index===game.round-1){
                 setTimeout(function(){
@@ -133,6 +137,10 @@ function clickBtn(buttonId){
     setTimeout(function(){
         button.style.backgroundColor = buttonId;
     },200);
+}
+
+function displayRound(game){
+    document.getElementById("display").innerHTML = (game.round>=10)?game.round:"0"+game.round;
 }
 
 function compTurn(game,audio){
@@ -169,8 +177,8 @@ function checkChoices(game,buttonId,audioFiles){
     }
     else{
         clickBtn(buttonId);
+        document.getElementById("display").innerHTML = "!!";
         wrongChoice(audioFiles);
-        
         setTimeout(function(){
             if(!game.strict){
                 let index = 0;
