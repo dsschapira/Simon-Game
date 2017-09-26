@@ -168,17 +168,33 @@ function checkChoices(game,buttonId,audioFiles){
     }
     else{
         clickBtn(buttonId);
-        //Need a soundbite for erroring
-
-        if(!game.strict){
-            let index = 0;
-            game.notPlayerRound();
-            allTurns(game,audioFiles,index);
-        }
-        else{
-            playGame(game);
-        }
+        wrongChoice(audioFiles);
+        
+        setTimeout(function(){
+            if(!game.strict){
+                let index = 0;
+                game.notPlayerRound();
+                allTurns(game,audioFiles,index);
+            }
+            else{
+                playGame(game);
+            }
+        },500);
     }
+}
+
+function wrongChoice(audio){
+    for(key in audio){
+        audio[key].play();
+        clickBtn(key);
+    }
+    setTimeout(function(){
+        for (key in audio){
+            audio[key].play();
+            clickBtn(key);
+        }
+    },400);
+
 }
 
 function arraysEqual(a, b) {
