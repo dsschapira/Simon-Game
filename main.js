@@ -220,10 +220,10 @@ function setTimer(game,timer){
 function buttonClickFcn(event,game,audioFiles,timer){
     game.addChoice(event.target.id);
     timer.resetCountdown(game);
-    checkChoices(game,event.target.id,audioFiles);
+    checkChoices(game,event.target.id,audioFiles,timer);
 }
 
-function checkChoices(game,buttonId,audioFiles){
+function checkChoices(game,buttonId,audioFiles,timer){
     let subSequence = game.sequence.slice(0,game.playerSequence.length);
     let sound = audioFiles[buttonId];
 
@@ -233,6 +233,7 @@ function checkChoices(game,buttonId,audioFiles){
 
         if(arraysEqual(game.playerSequence,game.sequence)){
             endGame(audioFiles);
+            timer.Off();
         }
         else if(game.playerSequence.length === game.round){
             let temp = !document.dispatchEvent(game.events["computer"]);
@@ -242,6 +243,7 @@ function checkChoices(game,buttonId,audioFiles){
         clickBtn(buttonId);
         document.getElementById("display").innerHTML = "!!";
         wrongChoice(audioFiles);
+        timer.Off();
         setTimeout(function(){
             if(!game.strict){
                 let index = 0;
