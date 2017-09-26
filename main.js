@@ -97,14 +97,14 @@ function strictBtnToggle(game){
 //End Button Functions
 
 //Main Gameplay Functions
-function getTiming(game){
-    if(game.round>=13){
+function getTiming(round){
+    if(round>=13){
         return 500;
     }
-    else if(game.round>=9){
+    else if(round>=9){
         return 700;
     }
-    else if(game.round>=5){
+    else if(round>=5){
         return 1200;
     }
     else{
@@ -113,7 +113,7 @@ function getTiming(game){
 }
 
 function allTurns(game,audio,index){
-    var timing = getTiming(game);
+    var timing = getTiming(game.round);
     setTimeout(function(){ 
         if(game.on){ //if the game is turned off while turn is going this will stop it.
             let buttonId = game.sequence[index];
